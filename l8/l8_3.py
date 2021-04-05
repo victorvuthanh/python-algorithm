@@ -9,60 +9,68 @@ a. граф должен храниться в виде списка смежн�
 b. генерация графа выполняется в отдельной функции, которая принимает на вход число вершин.
 '''
 
-from collections import deque
+import random
 
 
-def generate_graph(num):
-    new_graph = {}
+def create_graph(vertex, percent=1.0):
+    assert 0 < percent < 1, "Не верный диапазон"
 
-    for i in range(num):
-        new_graph[i] = tuple(j for j in range(num) if j != i)
+    graph = {}
 
-    return new_graph
+    for i in range(vertex):
+        graph[i] = set()
 
+        count_edge = random.randrange(1, int(vertex * percent))
+        while len(graph[i]) < count_edge:
+            edge = random.randrange(0, vertex)
+            if edge != i:
+                graph[i].add(edge)
 
-def walk_graph(graph, start, finish):
-    length = len(graph)
-    parent = [None] * length
-    is_visited = [False] * length
-
-    deq = deque([start])
-    is_visited[start] = True
-
-    while len(deq) > 0:
-        current = deq.pop()
-
-        if current == finish:
-            break
-
-        for vertex in graph[current]:
-            if not is_visited[vertex]:
-                is_visited[vertex] = True
-                parent[vertex] = current
-                deq.appendleft(vertex)
-    else:
-        return f"Из вершины {start} невозможно попасть в вершину {finish}"
-
-    cost = 0
-    way = deque([finish])
-    i = finish
-
-    while parent[i] != start:
-        cost += 1
-        way.appendleft(parent[i])
-        i = parent[i]
-
-    cost += 1
-    way.appendleft(start)
-
-    return list(way)
+    return graph
 
 
-n = int(input("Количество вершин в графе: "))
-s = int(input("Введите вершину начала: "))
-f = int(input("Введите вершину конца: "))
+def dfs(graph, start):
+    path = []
+    parent = [None for _ in range(len(graph))]
+    is_visited = [False for _ in range(len(graph))]
 
-g = generate_graph(n)
+    def _dfs(vertex):
+        is_visited[vertex] = True
+        path.append(vertex)
 
-print(walk_graph(g, s, f))
+        for item in graph[vertex]:
+            if not is_visited[item]:
+                parent[item] = vertex
+                _dfs(item)
+                path.append(-vertex)
+
+        else:
+            path.append(-vertex)
+
+    _dfs(start)
+
+    return parent, path
+
+
+g = create_graph(int(input('Сколько вершин будет в графе: ')),
+                 float(input('Укажите максимальное число ребер у вершин\n'
+                             'Процент от числа вершин (0; 1]: ')))
+
+for key, value in g.items():
+    print(f'Из вершин "{key}" ребра ведут к вершинам {value}')
+
+while True:
+    s = int(input('\nС какой вершины начать обход (-1 для выхода): '))
+    if s == -1:
+        break
+
+    parent, path = dfs(g,s)
+    print(parent)
+
+    for i, vertex in enumerate(path):
+        if i%10 ==0:
+            print()
+
+        print(f'{vertex:>4};', end = '')
+
 
