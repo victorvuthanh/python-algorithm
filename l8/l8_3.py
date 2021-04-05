@@ -65,3 +65,4 @@ f = int(input("Введите вершину конца: "))
 g = generate_graph(n)
 
 print(walk_graph(g, s, f))
+
