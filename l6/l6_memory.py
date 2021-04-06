@@ -10,13 +10,13 @@ class SumMemory:
     def _add(self, obj):
         spam = sys.getsizeof(obj)
         eggs = str(obj.__class__)
-        self.sum_memory += spam
+        self._sum_memory += spam
         if eggs in self._types:
             self._types[eggs][0] += 1
             self._types[eggs][1] += spam
         else:
             self._types[eggs] = [1] * 2
-            self.types[eggs][1] = spam
+            self._types[eggs][1] = spam
         if hasattr(obj, '__iter__'):
             if hasattr(obj, 'items'):
                 for xx in obj.items():
@@ -31,5 +31,5 @@ class SumMemory:
 
     def print_sum(self):
         print(f'Переменные заняли в сумме {self._sum_memory} байт')
-        for key, value in self._types.itms():
+        for key, value in self._types.items():
             print(f'Объекты класса {key} в количестве {value[0]} заняли {value[1]} байт')
