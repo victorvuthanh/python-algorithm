@@ -13,6 +13,7 @@ Python 3.9
 
 import random
 import sys
+import l6_memory
 
 r = [random.randint(0, 99) for _ in range(100)]
 print(f'Массив: {r}')
@@ -29,20 +30,15 @@ for i in r:
 
 print(f'Два наименьших элемента: {r[min_index_1]} и {r[min_index_2]}')
 
-print('Размер листа', sys.getsizeof(r))
-print('Размер элемента листа', sys.getsizeof(r[0]))
-print('Размер кортежа', sys.getsizeof(tuple(r)))
-print('Размер элемента кортежа', sys.getsizeof(tuple(r)[0]))
-sum = 0
-for size in r:
-    sum += sys.getsizeof(size)
-print('Размер всех элементов в листе', sum)
+# print('Размер листа', sys.getsizeof(r))
+# print('Размер элемента листа', sys.getsizeof(r[0]))
+# print('Размер кортежа', sys.getsizeof(tuple(r)))
+# print('Размер элемента кортежа', sys.getsizeof(tuple(r)[0]))
+# sum = 0
+# for size in r:
+#     sum += sys.getsizeof(size)
+# print('Размер всех элементов в листе', sum)
 
-'''
-Размер листа больше, чем неизменяемый кортеж, с одним набором данных
-(920 байт у листа 840 байт у кортежа). Размер не зависит от разрядности чисел.
-Зависит от размера массива.
-Каждый элемент массива занимает 28 байт. 100 элементов по 28 байт занимают
-2800 байт. Это значительно больше размера массива этих данных, т.к. Python
-делает оптимизацию и создаёт ссылки на один и тот же объект.
-'''
+sum_mem = l6_memory.SumMemory()
+sum_mem.extend(r, r[0], tuple(r), tuple(r)[0])
+sum_mem.print_sum()
